@@ -1,0 +1,308 @@
+{
+    "parameters": [
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Brows Shape",
+            "output_id": "Brows",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "browInnerUp",
+                    "sign": 1
+                },
+                {
+                    "name": "browOuterUpLeft",
+                    "sign": 1
+                },
+                {
+                    "name": "browOuterUpRight",
+                    "sign": 1
+                },
+                {
+                    "name": "browDownLeft",
+                    "sign": -1
+                },
+                {
+                    "name": "browDownRight",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Brow Left Y",
+            "output_id": "BrowLeftY",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "browInnerUp",
+                    "sign": 1
+                },
+                {
+                    "name": "browOuterUpLeft",
+                    "sign": 1
+                },
+                {
+                    "name": "browDownLeft",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Brow Right Y",
+            "output_id": "BrowRightY",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "browInnerUp",
+                    "sign": 1
+                },
+                {
+                    "name": "browOuterUpRight",
+                    "sign": 1
+                },
+                {
+                    "name": "browDownRight",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "LANDMARK",
+            "name": "Cheek Puff",
+            "output_id": "CheekPuff",
+            "scale": 30.0,
+            "offset": 0.6499999761581421,
+            "clamp": true,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_landmark_set": "face_oval_xy",
+            "calculate_option": "ELLIPSE_FIT"
+        },
+        {
+            "parameter_type": "LANDMARK",
+            "name": "Left Eye Open",
+            "output_id": "EyeOpenLeft",
+            "scale": 20.0,
+            "offset": 0.25,
+            "clamp": true,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_landmark_set": "left_eye_xy",
+            "calculate_option": "ELLIPSE_FIT"
+        },
+        {
+            "parameter_type": "LANDMARK",
+            "name": "Right Eye Open",
+            "output_id": "EyeOpenRight",
+            "scale": 10.0,
+            "offset": 0.30000001192092896,
+            "clamp": true,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_landmark_set": "right_eye_xy",
+            "calculate_option": "ELLIPSE_FIT"
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Left Eye X",
+            "output_id": "EyeLeftX",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "eyeLookOutLeft",
+                    "sign": 1
+                },
+                {
+                    "name": "eyeLookInLeft",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Right Eye X",
+            "output_id": "EyeRightX",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "eyeLookOutRight",
+                    "sign": -1
+                },
+                {
+                    "name": "eyeLookInRight",
+                    "sign": 1
+                }
+            ]
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Left Eye Y",
+            "output_id": "EyeLeftY",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "eyeLookUpLeft",
+                    "sign": 1
+                },
+                {
+                    "name": "eyeLookDownLeft",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Right Eye Y",
+            "output_id": "EyeRightY",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "eyeLookUpRight",
+                    "sign": 1
+                },
+                {
+                    "name": "eyeLookDownRight",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "LANDMARK",
+            "name": "Mouth Open",
+            "output_id": "MouthOpen",
+            "scale": 20.0,
+            "offset": 0.03500000014901161,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_landmark_set": "lips_xyz",
+            "calculate_option": "HULL_CALCUATION"
+        },
+        {
+            "parameter_type": "LANDMARK",
+            "name": "Mouth Open Plus Volume",
+            "output_id": "VoiceVolumePlusMouthOpen",
+            "scale": 20.0,
+            "offset": 0.04500000178813934,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_landmark_set": "lips_xyz",
+            "calculate_option": "HULL_CALCUATION"
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Mouth Smile",
+            "output_id": "MouthSmile",
+            "scale": 1.0,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "mouthSmileLeft",
+                    "sign": 1
+                },
+                {
+                    "name": "mouthSmileRight",
+                    "sign": 1
+                },
+                {
+                    "name": "mouthPucker",
+                    "sign": -1
+                },
+                {
+                    "name": "mouthShrugLower",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Mouth Smile Plus Frequency",
+            "output_id": "VoiceFrequencyPlusMouthSmile",
+            "scale": 0.5,
+            "offset": 0.0,
+            "clamp": false,
+            "min_val": 0.0,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "mouthSmileLeft",
+                    "sign": 1
+                },
+                {
+                    "name": "mouthSmileRight",
+                    "sign": 1
+                },
+                {
+                    "name": "mouthPucker",
+                    "sign": -1
+                },
+                {
+                    "name": "mouthShrugLower",
+                    "sign": -1
+                }
+            ]
+        },
+        {
+            "parameter_type": "BLENDSHAPE",
+            "name": "Mouth X Blendshape",
+            "output_id": "mouthX",
+            "scale": 3.0,
+            "offset": 0.0,
+            "clamp": true,
+            "min_val": -1,
+            "max_val": 1.0,
+            "input_parameters": [
+                {
+                    "name": "mouthRight",
+                    "sign": 1
+                },
+                {
+                    "name": "mouthPressRight",
+                    "sign": 1
+                },
+                {
+                    "name": "mouthLeft",
+                    "sign": -1
+                },
+                {
+                    "name": "mouthPressLeft",
+                    "sign": -1
+                }
+            ]
+        }
+    ]
+}

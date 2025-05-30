@@ -172,3 +172,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Model task files
+.task
+
+# Authorization file
+auth.json
