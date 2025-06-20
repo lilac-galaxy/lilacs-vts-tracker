@@ -174,7 +174,7 @@ cython_debug/
 .pypirc
 
 # Model task files
-.task
+*.task
 
 # Authorization file
 auth.json
