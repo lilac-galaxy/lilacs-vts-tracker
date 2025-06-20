@@ -12,7 +12,7 @@ from computation.parameters import (
     ParameterType,
     Parameter,
 )
-from computation.compute_parameters import ParameterComputer, ParameterComputerResults
+from computation.compute_parameters import ParameterComputer
 
 
 class Application:

@@ -1,10 +1,10 @@
 import argparse
-from capture_device import CaptureDevice
-from mp_processor import MPProcessor
-from vtube_studio_interface import VTSInterface
+from vision.capture_device import CaptureDevice
+from vision.mp_processor import MPProcessor
+from communication.vtube_studio_interface import VTSInterface
 from computation.compute_parameters import ParameterComputer
 from websockets.exceptions import ConnectionClosedOK
-from application import Application
+from application.application import Application
 import traceback
 
 
