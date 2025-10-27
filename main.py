@@ -40,10 +40,10 @@ def get_args():
     parser.add_argument(
         "--address", help="API address for VTube Studio", default="ws://localhost:8001"
     )
-    parser.add_argument("-c", "--camera", help="index of camera device", default=0)
-    parser.add_argument("-W", "--width", help="width of camera image", default=1280)
-    parser.add_argument("-H", "--height", help="height of camera image", default=720)
-    parser.add_argument("-f", "--fps", help="frame rate of the camera", default=30)
+    parser.add_argument("-c", "--camera", type=int, help="index of camera device", default=0)
+    parser.add_argument("-W", "--width", type=int, help="width of camera image", default=1280)
+    parser.add_argument("-H", "--height", type=int, help="height of camera image", default=720)
+    parser.add_argument("-f", "--fps", type=int, help="frame rate of the camera", default=30)
     parser.add_argument("-g", "--use-gpu", default=False, action="store_true")
     parser.add_argument(
         "--run-offline",
