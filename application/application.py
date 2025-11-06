@@ -237,9 +237,8 @@ class Application:
                 configs.config_defaults()
             if imgui.button("save"):
                 configs.file_save()
-            
-            results = computer.get_results()
-            if imgui.button("calibrate face position") and results:
+
+            if imgui.button("calibrate face position") and (results := computer.get_results()):
                 output = results.output_dict
                 curr_pos_of = computer.parameter_configs.face_position_offset
                 curr_rot_of = computer.parameter_configs.face_rotation_offset
