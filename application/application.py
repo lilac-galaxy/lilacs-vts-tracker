@@ -1,8 +1,9 @@
-from imgui.integrations.glfw import GlfwRenderer
-import OpenGL.GL as gl
-import glfw
+import ctypes
 import imgui
+import sdl2
+import OpenGL.GL as gl
 
+from imgui.integrations.sdl2 import SDL2Renderer
 from computation.parameter_config import ParameterConfigs
 from computation.parameters import (
     BlendshapeParameter,
@@ -18,37 +19,85 @@ from computation.compute_parameters import ParameterComputer
 class Application:
     def __init__(self):
         imgui.create_context()
-        self.window = self.impl_glfw_init()
-        self.impl = GlfwRenderer(self.window)
+        self.window, self.gl_context = self.impl_pysdl2_init()
+        self.impl = SDL2Renderer(self.window)
+        self.event = sdl2.SDL_Event()
+        self.should_close = False
 
     def __del__(self):
-        self.impl.shutdown()
-        glfw.terminate()
+        if self.impl:
+            self.impl.shutdown()
+        if self.gl_context:
+            sdl2.SDL_GL_DeleteContext(self.gl_context)
+        if self.window:
+            sdl2.SDL_DestroyWindow(self.window)
+        sdl2.SDL_Quit()
 
-    def impl_glfw_init(self):
+    def impl_pysdl2_init(self):
         width, height = 1280, 720
         window_name = "Lilac's VTS Face Tracker"
 
-        if not glfw.init():
-            raise Exception("Could not instantiate OpenGL context")
+        if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO) < 0:
+            raise Exception(
+                "Error: SDL could not initialize! SDL Error: "
+                + sdl2.SDL_GetError().decode("utf-8")
+            )
 
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
-        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_STENCIL_SIZE, 8)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_ACCELERATED_VISUAL, 1)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_MULTISAMPLEBUFFERS, 1)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_MULTISAMPLESAMPLES, 8)
+        sdl2.SDL_GL_SetAttribute(
+            sdl2.SDL_GL_CONTEXT_FLAGS, sdl2.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
+        )
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 4)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 1)
+        sdl2.SDL_GL_SetAttribute(
+            sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE
+        )
 
-        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
+        sdl2.SDL_SetHint(sdl2.SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, b"1")
+        sdl2.SDL_SetHint(sdl2.SDL_HINT_VIDEO_HIGHDPI_DISABLED, b"1")
 
-        window = glfw.create_window(int(width), int(height), window_name, None, None)
-        glfw.make_context_current(window)
+        window = sdl2.SDL_CreateWindow(
+            window_name.encode("utf-8"),
+            sdl2.SDL_WINDOWPOS_CENTERED,
+            sdl2.SDL_WINDOWPOS_CENTERED,
+            width,
+            height,
+            sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE,
+        )
 
-        if not window:
-            glfw.terminate()
-            raise Exception("Count not instantiate Window")
+        if window is None:
+            raise Exception(
+                "Error: Window could not be created! SDL Error: "
+                + sdl2.SDL_GetError().decode("utf-8")
+            )
 
-        return window
+        gl_context = sdl2.SDL_GL_CreateContext(window)
+        if gl_context is None:
+            raise Exception(
+                "Error: Cannot create OpenGL Context! SDL Error: "
+                + sdl2.SDL_GetError().decode("utf-8")
+            )
+
+        sdl2.SDL_GL_MakeCurrent(window, gl_context)
+        if sdl2.SDL_GL_SetSwapInterval(1) < 0:
+            raise Exception(
+                "Warning: Unable to set VSync! SDL Error: "
+                + sdl2.SDL_GetError().decode("utf-8")
+            )
+
+        return window, gl_context
 
     def render_frame(self, computer: ParameterComputer):
-        glfw.poll_events()
+        while sdl2.SDL_PollEvent(ctypes.byref(self.event)) != 0:
+            if self.event.type == sdl2.SDL_QUIT:
+                self.should_close = True
+                return
+            self.impl.process_event(self.event)
         self.impl.process_inputs()
 
         imgui.new_frame()
@@ -59,7 +108,7 @@ class Application:
 
         imgui.render()
         self.impl.render(imgui.get_draw_data())
-        glfw.swap_buffers(self.window)
+        sdl2.SDL_GL_SwapWindow(self.window)
 
     def draw_windows(self, computer: ParameterComputer):
         self.draw_parameter_window(computer.parameter_configs, computer)
@@ -220,7 +269,9 @@ class Application:
                 ).name
                 imgui.text(f"Calcuation: {option_name}")
 
-    def draw_parameter_window(self, configs: ParameterConfigs, computer: ParameterComputer):
+    def draw_parameter_window(
+        self, configs: ParameterConfigs, computer: ParameterComputer
+    ):
         with imgui.begin("Parameter Window"):
             parameter: Parameter
             for parameter in configs.parameters:
@@ -238,7 +289,9 @@ class Application:
             if imgui.button("save"):
                 configs.file_save()
 
-            if imgui.button("calibrate face position") and (results := computer.get_results()):
+            if imgui.button("calibrate face position") and (
+                results := computer.get_results()
+            ):
                 output = results.output_dict
                 curr_pos_of = computer.parameter_configs.face_position_offset
                 curr_rot_of = computer.parameter_configs.face_rotation_offset
@@ -255,7 +308,7 @@ class Application:
                 configs.file_save()
 
     def keep_drawing(self):
-        return not glfw.window_should_close(self.window)
+        return not self.should_close
 
 
 if __name__ == "__main__":
