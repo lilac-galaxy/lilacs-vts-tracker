@@ -62,7 +62,7 @@ class Application:
         glfw.swap_buffers(self.window)
 
     def draw_windows(self, computer: ParameterComputer):
-        self.draw_parameter_window(computer.parameter_configs)
+        self.draw_parameter_window(computer.parameter_configs, computer)
         results = computer.get_results()
         blendshapes = None
         outputs = None
@@ -220,7 +220,7 @@ class Application:
                 ).name
                 imgui.text(f"Calcuation: {option_name}")
 
-    def draw_parameter_window(self, configs: ParameterConfigs):
+    def draw_parameter_window(self, configs: ParameterConfigs, computer: ParameterComputer):
         with imgui.begin("Parameter Window"):
             parameter: Parameter
             for parameter in configs.parameters:
@@ -236,6 +236,22 @@ class Application:
             if imgui.button("set defaults"):
                 configs.config_defaults()
             if imgui.button("save"):
+                configs.file_save()
+
+            if imgui.button("calibrate face position") and (results := computer.get_results()):
+                output = results.output_dict
+                curr_pos_of = computer.parameter_configs.face_position_offset
+                curr_rot_of = computer.parameter_configs.face_rotation_offset
+                configs.face_position_offset = (
+                    output.get("FacePositionX", 0) + curr_pos_of[0],
+                    output.get("FacePositionY", 0) + curr_pos_of[1],
+                    output.get("FacePositionZ", 0) + curr_pos_of[2],
+                )
+                configs.face_rotation_offset = (
+                    output.get("FaceAngleX", 0) + curr_rot_of[0],
+                    output.get("FaceAngleY", 0) + curr_rot_of[1],
+                    output.get("FaceAngleZ", 0) + curr_rot_of[2],
+                )
                 configs.file_save()
 
     def keep_drawing(self):

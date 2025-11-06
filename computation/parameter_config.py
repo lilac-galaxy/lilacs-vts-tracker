@@ -13,6 +13,8 @@ import json
 class ParameterConfigs:
     def __init__(self, params_file="parameters.json"):
         self.parameters = []
+        self.face_position_offset: tuple[float, float, float] = (0, 0, 0)
+        self.face_rotation_offset: tuple[float, float, float] = (0, 0, 0)
         self.params_file = params_file
         self.init()
 
@@ -21,7 +23,16 @@ class ParameterConfigs:
             parameters_out = []
             for parameter in self.parameters:
                 parameters_out.append(parameter.serialize())
-            fp.write(json.dumps({"parameters": parameters_out}, indent=4))
+            fp.write(
+                json.dumps(
+                    {
+                        "parameters": parameters_out,
+                        "face_position_offset": self.face_position_offset,
+                        "face_rotation_offset": self.face_rotation_offset
+                    },
+                    indent=4
+                )
+            )
 
     def config_reset(self):
         self.parameters.clear()
@@ -47,6 +58,14 @@ class ParameterConfigs:
             for parameter in params_data["parameters"]:
                 new_param = Parameter(**parameter)
                 self.parameters.append(new_param)
+            if "face_position_offset" in params_data:
+                self.face_position_offset = tuple(
+                    params_data["face_position_offset"]
+                )
+            if "face_rotation_offset" in params_data:
+                self.face_rotation_offset = tuple(
+                    params_data["face_rotation_offset"]
+                )
 
     def default_init(self):
         self.parameters.append(
