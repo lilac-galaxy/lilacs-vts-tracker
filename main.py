@@ -6,6 +6,7 @@ from computation.compute_parameters import ParameterComputer
 from websockets.exceptions import ConnectionClosedOK
 from application.application import Application
 import traceback
+from threading import Thread
 
 
 class ConnectionMonitor:
@@ -98,29 +99,45 @@ def main(args):
 
     processor = MPProcessor(args.use_gpu, args.model, callback)
 
-    # Main Loop
-    while connection_monitor.connection_valid():
-        # Process
+    def _face_detection_loop():
         try:
-            ret = capture.read_image()
-            if ret.valid != None:
-                processor.detect_image(ret.image, ret.timestamp)
-            else:
-                capture.wait()
+            while connection_monitor.connection_valid():
+                ret = capture.read_image()
+                if ret.valid != None:
+                    processor.detect_image(ret.image, ret.timestamp)
+                else:
+                    capture.wait()
         except KeyboardInterrupt:
             print("Keyboard Interrupt, exiting.")
-            break
+            connection_monitor.connection_closed()
         except Exception:
             traceback.print_exc()
-            break
+            connection_monitor.connection_closed()
 
-        # Display
-        if args.run_app:
-            if app.keep_drawing():
-                app.render_frame(parameter_computer)
-            else:
-                print("Window closed, quitting")
-                break
+    if not args.run_app:
+        _face_detection_loop()
+
+    else:
+        face_detection_thread = Thread(target=_face_detection_loop)
+        face_detection_thread.start()
+        # Main Loop
+        try:
+            while connection_monitor.connection_valid():
+                # Display
+                if app.keep_drawing():
+                    app.render_frame(parameter_computer)
+                else:
+                    print("Window closed, quitting")
+                    connection_monitor.connection_closed()
+                    break
+        except KeyboardInterrupt:
+            print("Keyboard Interrupt, exiting.")
+            connection_monitor.connection_closed()
+        except Exception:
+            traceback.print_exc()
+            connection_monitor.connection_closed()
+
+        face_detection_thread.join()
 
 
 if __name__ == "__main__":

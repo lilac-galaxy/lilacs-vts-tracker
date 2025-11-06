@@ -28,9 +28,9 @@ class ParameterConfigs:
                     {
                         "parameters": parameters_out,
                         "face_position_offset": self.face_position_offset,
-                        "face_rotation_offset": self.face_rotation_offset
+                        "face_rotation_offset": self.face_rotation_offset,
                     },
-                    indent=4
+                    indent=4,
                 )
             )
 
@@ -59,13 +59,9 @@ class ParameterConfigs:
                 new_param = Parameter(**parameter)
                 self.parameters.append(new_param)
             if "face_position_offset" in params_data:
-                self.face_position_offset = tuple(
-                    params_data["face_position_offset"]
-                )
+                self.face_position_offset = tuple(params_data["face_position_offset"])
             if "face_rotation_offset" in params_data:
-                self.face_rotation_offset = tuple(
-                    params_data["face_rotation_offset"]
-                )
+                self.face_rotation_offset = tuple(params_data["face_rotation_offset"])
 
     def default_init(self):
         self.parameters.append(

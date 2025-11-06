@@ -34,9 +34,15 @@ class ParameterComputer:
         rot_of = self.parameter_configs.face_rotation_offset
 
         translation_vector = transformation_matrix[:3, 3]
-        output += self.get_parameter("FacePositionX", (-translation_vector[0]) - pos_of[0])
-        output += self.get_parameter("FacePositionY", (translation_vector[1]) - pos_of[1])
-        output += self.get_parameter("FacePositionZ", (-translation_vector[2]) - pos_of[2])
+        output += self.get_parameter(
+            "FacePositionX", (-translation_vector[0]) - pos_of[0]
+        )
+        output += self.get_parameter(
+            "FacePositionY", (translation_vector[1]) - pos_of[1]
+        )
+        output += self.get_parameter(
+            "FacePositionZ", (-translation_vector[2]) - pos_of[2]
+        )
 
         rotation_matrix = transformation_matrix[:3, :3]
         r = Rotation.from_matrix(rotation_matrix)
