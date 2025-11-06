@@ -12,6 +12,10 @@ class ParameterComputerResults:
         self.blendshapes = blendshapes
         self.timestamp = timestamp
 
+    @property
+    def output_dict(self):
+        return {output["id"]: output["value"] for output in self.outputs}
+
 
 class ParameterComputer:
     def __init__(self, save_results: bool = False):
@@ -25,17 +29,21 @@ class ParameterComputer:
 
     def compute_translation_rotation(self, transformation_matrix):
         output = []
+
+        pos_of = self.parameter_configs.face_position_offset
+        rot_of = self.parameter_configs.face_rotation_offset
+
         translation_vector = transformation_matrix[:3, 3]
-        output += self.get_parameter("FacePositionX", -translation_vector[0])
-        output += self.get_parameter("FacePositionY", translation_vector[1])
-        output += self.get_parameter("FacePositionZ", -translation_vector[2])
+        output += self.get_parameter("FacePositionX", (-translation_vector[0]) - pos_of[0])
+        output += self.get_parameter("FacePositionY", (translation_vector[1]) - pos_of[1])
+        output += self.get_parameter("FacePositionZ", (-translation_vector[2]) - pos_of[2])
 
         rotation_matrix = transformation_matrix[:3, :3]
         r = Rotation.from_matrix(rotation_matrix)
         angles = r.as_euler("zyx", degrees=True)
-        output += self.get_parameter("FaceAngleX", -angles[1])
-        output += self.get_parameter("FaceAngleY", -angles[2])
-        output += self.get_parameter("FaceAngleZ", angles[0])
+        output += self.get_parameter("FaceAngleX", (-angles[1]) - rot_of[0])
+        output += self.get_parameter("FaceAngleY", (-angles[2]) - rot_of[1])
+        output += self.get_parameter("FaceAngleZ", angles[0] - rot_of[2])
         return output
 
     def create_blendshapes_dict(self, blendshape_list):
