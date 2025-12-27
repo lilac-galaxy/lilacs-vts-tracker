@@ -178,3 +178,6 @@ cython_debug/
 
 # Authorization file
 auth.json
+
+# imgui ini file
+imgui.ini

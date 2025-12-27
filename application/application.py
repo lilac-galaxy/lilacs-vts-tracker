@@ -35,7 +35,7 @@ class Application:
 
     def impl_pysdl2_init(self):
         width, height = 1280, 720
-        window_name = "Lilac's VTS Face Tracker"
+        window_name = "Lilac's VTS Tracker"
 
         if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO) < 0:
             raise Exception(
@@ -50,7 +50,8 @@ class Application:
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_MULTISAMPLEBUFFERS, 1)
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_MULTISAMPLESAMPLES, 8)
         sdl2.SDL_GL_SetAttribute(
-            sdl2.SDL_GL_CONTEXT_FLAGS, sdl2.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
+            sdl2.SDL_GL_CONTEXT_FLAGS,
+            sdl2.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG,
         )
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 4)
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 1)
@@ -58,7 +59,9 @@ class Application:
             sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE
         )
 
-        sdl2.SDL_SetHint(sdl2.SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, b"1")
+        sdl2.SDL_SetHint(
+            sdl2.SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, b"1"
+        )
         sdl2.SDL_SetHint(sdl2.SDL_HINT_VIDEO_HIGHDPI_DISABLED, b"1")
 
         window = sdl2.SDL_CreateWindow(
@@ -116,7 +119,7 @@ class Application:
         blendshapes = None
         outputs = None
         landmarks = None
-        if results != None:
+        if results is not None:
             blendshapes = results.blendshapes
             outputs = results.outputs
             landmarks = results.landmarks
@@ -125,18 +128,31 @@ class Application:
         self.draw_outputs(outputs)
         self.draw_landmarks(landmarks)
 
-    def draw_landmark_set(self, x, y, draw_list, landmarks, color):
+    def draw_landmark_set(self, x, y, offsets, draw_list, landmarks, color):
         for point in landmarks:
             draw_list.add_circle_filled(
-                x + ((0.5 - point[0])) * 1000,
-                y + (point[1] - 0.5) * 1000,
+                x + ((offsets[0] - point[0])) * 1000,
+                y + (point[1] - offsets[1]) * 1000,
                 1,
                 color,
             )
 
+    def get_landmark_offset(self, landmarks):
+        num_landmarks = len(landmarks["all_xy"])
+        if num_landmarks <= 0:
+            return (0.0, 0.0)
+        sum_x = 0
+        sum_y = 0
+        for point in landmarks["all_xy"]:
+            sum_x += point[0]
+            sum_y += point[1]
+        sum_x = sum_x / num_landmarks
+        sum_y = sum_y / num_landmarks
+        return (sum_x, sum_y)
+
     def draw_landmarks(self, landmarks):
         with imgui.begin("Landmarks Window"):
-            if landmarks == None:
+            if landmarks is None:
                 imgui.text("No Landmark Data Available")
             else:
                 draw_list = imgui.get_window_draw_list()
@@ -144,9 +160,11 @@ class Application:
                 w_size_x, w_size_y = imgui.get_window_size()
                 x += w_size_x // 2
                 y += w_size_y // 2
+                offsets = self.get_landmark_offset(landmarks)
                 self.draw_landmark_set(
                     x,
                     y,
+                    offsets,
                     draw_list,
                     landmarks["all_xy"],
                     imgui.get_color_u32_rgba(1, 1, 0, 1),
@@ -154,6 +172,7 @@ class Application:
                 self.draw_landmark_set(
                     x,
                     y,
+                    offsets,
                     draw_list,
                     landmarks["lips_xy"],
                     imgui.get_color_u32_rgba(1, 0, 0, 1),
@@ -161,6 +180,7 @@ class Application:
                 self.draw_landmark_set(
                     x,
                     y,
+                    offsets,
                     draw_list,
                     landmarks["left_eye_xy"],
                     imgui.get_color_u32_rgba(1, 0, 0, 1),
@@ -168,6 +188,7 @@ class Application:
                 self.draw_landmark_set(
                     x,
                     y,
+                    offsets,
                     draw_list,
                     landmarks["right_eye_xy"],
                     imgui.get_color_u32_rgba(1, 0, 0, 1),
@@ -175,6 +196,7 @@ class Application:
                 self.draw_landmark_set(
                     x,
                     y,
+                    offsets,
                     draw_list,
                     landmarks["left_eyebrow_xy"],
                     imgui.get_color_u32_rgba(1, 0, 0, 1),
@@ -182,6 +204,7 @@ class Application:
                 self.draw_landmark_set(
                     x,
                     y,
+                    offsets,
                     draw_list,
                     landmarks["right_eyebrow_xy"],
                     imgui.get_color_u32_rgba(1, 0, 0, 1),
@@ -189,7 +212,7 @@ class Application:
 
     def draw_outputs(self, outputs):
         with imgui.begin("Output Window"):
-            if outputs == None:
+            if outputs is None:
                 imgui.text("No Output Data Available")
             else:
                 for result in outputs:
@@ -200,7 +223,7 @@ class Application:
     def draw_blendshapes(self, blendshapes):
         with imgui.begin("Blendshape Window"):
             imgui.push_style_color(imgui.COLOR_PLOT_HISTOGRAM, 0.6, 0.0, 0.4)
-            if blendshapes == None:
+            if blendshapes is None:
                 imgui.text("No Blendshape Results Available")
             else:
                 for blendshape_name in blendshapes:
@@ -217,7 +240,9 @@ class Application:
         _, parameter.offset = imgui.input_float(
             f"{parameter.name} Offset: ", parameter.offset
         )
-        _, parameter.clamp = imgui.checkbox(f"{parameter.name} Clamp", parameter.clamp)
+        _, parameter.clamp = imgui.checkbox(
+            f"{parameter.name} Clamp", parameter.clamp
+        )
         if parameter.clamp:
             changed_min, new_min = imgui.input_float(
                 f"{parameter.name} Min: ", parameter.min_val
@@ -267,7 +292,7 @@ class Application:
                 option_name = LandmarkCalculateOption(
                     landmark_param.calculate_option
                 ).name
-                imgui.text(f"Calcuation: {option_name}")
+                imgui.text(f"Calculation: {option_name}")
 
     def draw_parameter_window(
         self, configs: ParameterConfigs, computer: ParameterComputer

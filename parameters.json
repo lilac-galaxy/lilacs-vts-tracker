@@ -120,7 +120,7 @@
             "parameter_type": "BLENDSHAPE",
             "name": "Left Eye X",
             "output_id": "EyeLeftX",
-            "scale": 1.0,
+            "scale": -1.0,
             "offset": 0.0,
             "clamp": false,
             "min_val": 0.0,
@@ -140,7 +140,7 @@
             "parameter_type": "BLENDSHAPE",
             "name": "Right Eye X",
             "output_id": "EyeRightX",
-            "scale": 1.0,
+            "scale": -1.0,
             "offset": 0.0,
             "clamp": false,
             "min_val": 0.0,
@@ -206,7 +206,7 @@
             "min_val": 0.0,
             "max_val": 1.0,
             "input_landmark_set": "lips_xyz",
-            "calculate_option": "HULL_CALCUATION"
+            "calculate_option": "HULL_CALCULATION"
         },
         {
             "parameter_type": "LANDMARK",
@@ -218,7 +218,7 @@
             "min_val": 0.0,
             "max_val": 1.0,
             "input_landmark_set": "lips_xyz",
-            "calculate_option": "HULL_CALCUATION"
+            "calculate_option": "HULL_CALCULATION"
         },
         {
             "parameter_type": "BLENDSHAPE",

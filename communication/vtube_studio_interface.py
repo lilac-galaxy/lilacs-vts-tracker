@@ -10,7 +10,6 @@ class VTSInterface:
             raise Exception("Authentication filepath cannot be empty!")
         self.auth_file = auth_file
         self.auth_token = ""
-        create_parameters = False
 
         if os.path.isfile(self.auth_file):
             with open(self.auth_file, "r") as fp:
@@ -20,12 +19,8 @@ class VTSInterface:
         if self.auth_token == "":
             # First time setup
             self.get_authentication_token()
-            create_parameters = True
 
         self.authenticate()
-
-        if create_parameters:
-            self.create_custom_parameters()
 
     def close(self):
         if self.websocket:
@@ -61,7 +56,8 @@ class VTSInterface:
                 auth_json.write(json.dumps(auth_token_data, indent=4))
         else:
             raise Exception(
-                f"Received message type '{response_message_type}' when expecting 'AuthenticationTokenResponse'. No Token Created"
+                f"Received message type '{response_message_type}' when \
+                    expecting 'AuthenticationTokenResponse'. No Token Created"
             )
 
     def authenticate(self):
@@ -86,7 +82,8 @@ class VTSInterface:
             print("Authentication Successful!")
         else:
             raise Exception(
-                f"Received message type '{response_message_type}' when expecting 'AuthenticationResponse'. Cannot authenticate"
+                f"Received message type '{response_message_type}' when \
+                    expecting 'AuthenticationResponse'. Cannot authenticate"
             )
 
     def parameter_creation_request(
@@ -115,24 +112,6 @@ class VTSInterface:
         )
         websocket.send(request_message_json)
         _ = websocket.recv()
-
-    def create_custom_parameters(self):
-        self.create_parameter(
-            self.websocket,
-            "lilac_BrowsLeftForm",
-            "mediapipe mouthX",
-            min_val=-1,
-            max_val=1,
-            default_val=0,
-        )
-        self.create_parameter(
-            self.websocket,
-            "lilac_BrowsRightForm",
-            "mediapipe mouthX",
-            min_val=-1,
-            max_val=1,
-            default_val=0,
-        )
 
     def send_detection_parameter_results(self, detection_param_values):
         face_found = len(detection_param_values) > 0

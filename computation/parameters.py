@@ -77,11 +77,15 @@ class BlendshapeParameter(BaseParameter):
         min_val: float = 0.0,
         max_val: float = 1.0,
     ):
-        super().__init__(name, output_id, scale, offset, clamp, min_val, max_val)
+        super().__init__(
+            name, output_id, scale, offset, clamp, min_val, max_val
+        )
         self.input_parameters = []
         for parameter in input_parameters:
-            if type(parameter) == dict:
-                self.input_parameters.append(InputBlendshapeOption(**parameter))
+            if type(parameter) is dict:
+                self.input_parameters.append(
+                    InputBlendshapeOption(**parameter)
+                )
             else:
                 self.input_parameters.append(parameter)
 
@@ -109,7 +113,7 @@ class BlendshapeParameter(BaseParameter):
 
 class LandmarkCalculateOption(Enum):
     ELLIPSE_FIT = 1
-    HULL_CALCUATION = 2
+    HULL_CALCULATION = 2
 
 
 class LandmarkParameter(BaseParameter):
@@ -125,20 +129,21 @@ class LandmarkParameter(BaseParameter):
         min_val: float = 0.0,
         max_val: float = 1.0,
     ):
-        super().__init__(name, output_id, scale, offset, clamp, min_val, max_val)
+        super().__init__(
+            name, output_id, scale, offset, clamp, min_val, max_val
+        )
         self.input_landmark_set = input_landmark_set
-        if type(calculate_option) == str:
+        if type(calculate_option) is str:
             self.calculate_option = LandmarkCalculateOption[calculate_option]
-        elif type(calculate_option) == int:
+        elif type(calculate_option) is int:
             self.calculate_option = LandmarkCalculateOption(calculate_option)
         else:
             self.calculate_option = calculate_option
 
     def calculate_ellipse_minor_major_ratio(self, landmark_points):
         ellipse_array = np.array(landmark_points)
-        ell = EllipseModel()
-        ell.estimate(ellipse_array)
-        _, _, a, b, _ = ell.params
+        model = EllipseModel.from_estimate(ellipse_array)
+        a, b = model.axis_lengths
         return b / a
 
     def get_hull(self, points):
@@ -149,7 +154,7 @@ class LandmarkParameter(BaseParameter):
         face_hull = self.get_hull(oval_points)
         landmark_hull = self.get_hull(landmark_points)
         landmark_share = 0
-        if face_hull != None and landmark_hull != None:
+        if face_hull is not None and landmark_hull is not None:
             landmark_share = landmark_hull.area / face_hull.area
         return landmark_share
 
@@ -157,8 +162,10 @@ class LandmarkParameter(BaseParameter):
         landmark_points = landmark_sets[self.input_landmark_set]
         match self.calculate_option:
             case LandmarkCalculateOption.ELLIPSE_FIT:
-                self.value = self.calculate_ellipse_minor_major_ratio(landmark_points)
-            case LandmarkCalculateOption.HULL_CALCUATION:
+                self.value = self.calculate_ellipse_minor_major_ratio(
+                    landmark_points
+                )
+            case LandmarkCalculateOption.HULL_CALCULATION:
                 oval_points = landmark_sets["face_oval_xyz"]
                 self.value = self.calculate_hull(landmark_points, oval_points)
         return super().compute_value()
@@ -179,9 +186,9 @@ class ParameterType(Enum):
 
 class Parameter:
     def __init__(self, parameter_type, *args, **kwargs):
-        if type(parameter_type) == str:
+        if type(parameter_type) is str:
             self.parameter_type = ParameterType[parameter_type]
-        elif type(parameter_type) == int:
+        elif type(parameter_type) is int:
             self.parameter_type = ParameterType(parameter_type)
         else:
             self.parameter_type = parameter_type

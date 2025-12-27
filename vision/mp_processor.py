@@ -5,11 +5,13 @@ from mediapipe.tasks.python import vision
 
 class MPProcessor:
     def __init__(self, use_gpu: bool, model: str, result_callback):
-        delagate = python.BaseOptions.Delegate.CPU
+        delegate = python.BaseOptions.Delegate.CPU
         if use_gpu:
-            delagate = python.BaseOptions.Delegate.GPU
+            delegate = python.BaseOptions.Delegate.GPU
 
-        base_options = python.BaseOptions(model_asset_path=model, delegate=delagate)
+        base_options = python.BaseOptions(
+            model_asset_path=model, delegate=delegate
+        )
 
         self.result_callback = result_callback
 
@@ -24,9 +26,11 @@ class MPProcessor:
 
         self.detector = vision.FaceLandmarker.create_from_options(options)
 
-    def detect_image(self, input_image, timestamp):
-        formatted_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=input_image)
-        self.detector.detect_async(formatted_image, timestamp)
+    def detect_image(self, input_image, timestamp_ms):
+        formatted_image = mp.Image(
+            image_format=mp.ImageFormat.SRGB, data=input_image
+        )
+        self.detector.detect_async(formatted_image, timestamp_ms)
 
     def process_results(
         self,

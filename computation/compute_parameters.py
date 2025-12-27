@@ -35,21 +35,21 @@ class ParameterComputer:
 
         translation_vector = transformation_matrix[:3, 3]
         output += self.get_parameter(
-            "FacePositionX", (-translation_vector[0]) - pos_of[0]
+            "FacePositionX", float(-translation_vector[0] - pos_of[0])
         )
         output += self.get_parameter(
-            "FacePositionY", (translation_vector[1]) - pos_of[1]
+            "FacePositionY", float(translation_vector[1] - pos_of[1])
         )
         output += self.get_parameter(
-            "FacePositionZ", (-translation_vector[2]) - pos_of[2]
+            "FacePositionZ", float(-translation_vector[2] - pos_of[2])
         )
 
         rotation_matrix = transformation_matrix[:3, :3]
         r = Rotation.from_matrix(rotation_matrix)
         angles = r.as_euler("zyx", degrees=True)
-        output += self.get_parameter("FaceAngleX", (-angles[1]) - rot_of[0])
-        output += self.get_parameter("FaceAngleY", (-angles[2]) - rot_of[1])
-        output += self.get_parameter("FaceAngleZ", angles[0] - rot_of[2])
+        output += self.get_parameter("FaceAngleX", float(-angles[1]) - rot_of[0])
+        output += self.get_parameter("FaceAngleY", float(-angles[2]) - rot_of[1])
+        output += self.get_parameter("FaceAngleZ", float(angles[0] - rot_of[2]))
         return output
 
     def create_blendshapes_dict(self, blendshape_list):
@@ -64,20 +64,26 @@ class ParameterComputer:
             # Do nothing if no shapes found
             return []
 
-        face_blendshapes = self.create_blendshapes_dict(face_blendshapes_list[0])
+        face_blendshapes = self.create_blendshapes_dict(
+            face_blendshapes_list[0]
+        )
 
         face_landmarks = detection_result.face_landmarks[0]
         landmark_parser = LandmarkParser(face_landmarks)
         landmark_sets = landmark_parser.get_landmark_sets()
 
-        transformation_matrix = detection_result.facial_transformation_matrixes[0]
+        transformation_matrix = (
+            detection_result.facial_transformation_matrixes[0]
+        )
 
         # Compute Parameters from results
         output = []
         for parameter in self.parameter_configs.parameters:
             match parameter.parameter_type:
                 case ParameterType.BLENDSHAPE:
-                    output += parameter.parameter.compute_value(face_blendshapes)
+                    output += parameter.parameter.compute_value(
+                        face_blendshapes
+                    )
                 case ParameterType.LANDMARK:
                     output += parameter.parameter.compute_value(landmark_sets)
 
@@ -92,7 +98,7 @@ class ParameterComputer:
         return output
 
     def get_results(self):
-        if self.results != None:
+        if self.results is not None:
             with self.lock:
                 return deepcopy(self.results)
         else:

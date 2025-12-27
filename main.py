@@ -24,7 +24,8 @@ class ConnectionMonitor:
 def get_args():
     parser = argparse.ArgumentParser(
         prog="lilacs-VTS-Face-Tracker",
-        description="Plugin to compute customized VTube Studio parameters from Google's Mediapipe face landmarker",
+        description="Plugin to compute customized VTube Studio parameters \
+            from Google's Mediapipe face landmarker",
     )
     parser.add_argument(
         "-a",
@@ -39,7 +40,9 @@ def get_args():
         default="face_landmarker_v2_with_blendshapes.task",
     )
     parser.add_argument(
-        "--address", help="API address for VTube Studio", default="ws://localhost:8001"
+        "--address",
+        help="API address for VTube Studio",
+        default="ws://localhost:8001",
     )
     parser.add_argument(
         "-c", "--camera", type=int, help="index of camera device", default=0
@@ -61,7 +64,10 @@ def get_args():
         action="store_true",
     )
     parser.add_argument(
-        "--run-app", help="Launch GUI interface", default=False, action="store_true"
+        "--run-app",
+        help="Launch GUI interface",
+        default=False,
+        action="store_true",
     )
     return parser.parse_args()
 
@@ -71,7 +77,7 @@ def main(args):
     capture = CaptureDevice(args.camera, args.width, args.height, args.fps)
 
     # Init Websocket Connection
-    if args.run_offline == False:
+    if args.run_offline is False:
         vts_interface = VTSInterface(args.address, args.auth_file)
     else:
         vts_interface = None
@@ -91,9 +97,11 @@ def main(args):
         parameter_results = parameter_computer.compute_parameters(
             detection_results, timestamp
         )
-        if args.run_offline == False:
+        if args.run_offline is False:
             try:
-                vts_interface.send_detection_parameter_results(parameter_results)
+                vts_interface.send_detection_parameter_results(
+                    parameter_results
+                )
             except ConnectionClosedOK:
                 connection_monitor.connection_closed()
 
@@ -103,7 +111,7 @@ def main(args):
         try:
             while connection_monitor.connection_valid():
                 ret = capture.read_image()
-                if ret.valid != None:
+                if ret.valid is not None:
                     processor.detect_image(ret.image, ret.timestamp)
                 else:
                     capture.wait()

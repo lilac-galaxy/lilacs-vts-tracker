@@ -1,7 +1,5 @@
 from computation.parameters import (
-    LandmarkParameter,
     LandmarkCalculateOption,
-    BlendshapeParameter,
     InputBlendshapeOption,
     ParameterType,
     Parameter,
@@ -13,8 +11,8 @@ import json
 class ParameterConfigs:
     def __init__(self, params_file="parameters.json"):
         self.parameters = []
-        self.face_position_offset: tuple[float, float, float] = (0, 0, 0)
-        self.face_rotation_offset: tuple[float, float, float] = (0, 0, 0)
+        self.face_position_offset: tuple[float, float, float] = (0.0, 0.0, 0.0)
+        self.face_rotation_offset: tuple[float, float, float] = (0.0, 0.0, 0.0)
         self.params_file = params_file
         self.init()
 
@@ -45,10 +43,6 @@ class ParameterConfigs:
     def init(self):
         if os.path.isfile(self.params_file):
             self.file_init()
-            # try:
-            #     self.file_init()
-            # except Exception as e:
-            #     self.default_init()
         else:
             self.default_init()
 
@@ -59,9 +53,13 @@ class ParameterConfigs:
                 new_param = Parameter(**parameter)
                 self.parameters.append(new_param)
             if "face_position_offset" in params_data:
-                self.face_position_offset = tuple(params_data["face_position_offset"])
+                self.face_position_offset = tuple(
+                    params_data["face_position_offset"]
+                )
             if "face_rotation_offset" in params_data:
-                self.face_rotation_offset = tuple(params_data["face_rotation_offset"])
+                self.face_rotation_offset = tuple(
+                    params_data["face_rotation_offset"]
+                )
 
     def default_init(self):
         self.parameters.append(
@@ -200,7 +198,7 @@ class ParameterConfigs:
                 ParameterType.LANDMARK,
                 "Mouth Open",
                 "lips_xyz",
-                LandmarkCalculateOption.HULL_CALCUATION,
+                LandmarkCalculateOption.HULL_CALCULATION,
                 "MouthOpen",
                 clamp=False,
                 scale=20,
@@ -213,7 +211,7 @@ class ParameterConfigs:
                 ParameterType.LANDMARK,
                 "Mouth Open Plus Volume",
                 "lips_xyz",
-                LandmarkCalculateOption.HULL_CALCUATION,
+                LandmarkCalculateOption.HULL_CALCULATION,
                 "VoiceVolumePlusMouthOpen",
                 clamp=False,
                 scale=20,

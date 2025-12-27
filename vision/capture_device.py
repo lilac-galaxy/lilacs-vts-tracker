@@ -17,7 +17,7 @@ class CaptureDevice:
         self.capture.set(cv2.CAP_PROP_FPS, fps)
         self.capture.open(camera_id)
 
-        if self.capture.isOpened() == False:
+        if self.capture.isOpened() is False:
             raise Exception(f"Failed to open camera ID: {camera_id}")
 
         self.fps = self.capture.get(cv2.CAP_PROP_FPS)
@@ -33,8 +33,8 @@ class CaptureDevice:
         time.sleep(self.wait_interval_sec)
 
     def read_image(self):
-        if self.capture.isOpened() == False:
-            raise Exception(f"Could not detect new frame, camera device closed")
+        if self.capture.isOpened() is False:
+            raise Exception("Could not detect new frame, camera device closed")
 
         ret, cv2_image = self.capture.read()
         timestamp = int(self.capture.get(cv2.CAP_PROP_POS_MSEC))

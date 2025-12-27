@@ -1,5 +1,5 @@
 # lilacs-vts-tracker
-A VTube Studio face tracker plugin for linux built on top of google's mediapipe.
+A VTube Studio camera-based face tracker plugin for linux built on top of google's mediapipe.
 
 Mediapipe face landmarker model attained from google via
 
@@ -7,18 +7,18 @@ Mediapipe face landmarker model attained from google via
 $ wget -O face_landmarker_v2_with_blendshapes.task -q https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task
 ```
 
-Python Requirements: mediapipe, websockets, scikit-image, pyimgui[glfw] python version 3.9 - 3.12 (see [requirements.txt](./requirements.txt))
+Python Requirements: mediapipe, websockets, scikit-image, pyimgui[sdl2] python version 3.9 - 3.12 (see [requirements.txt](./requirements.txt))
 
 App Requirements: OpenGL version >= v3.3
 
 Recommend running in a virtual environment
 
 ### Venv Setup
-This was done on arch linux with the python3.12 package as mediapipe does not yet work with the current version of python 3.13 at time of writing. Use whichever relevant python binary with a version between 3.9 and 3.12 in place of `python3.12` below.
+This was done on arch linux with the python3.12 package as pyimgui does not yet support python3.13.
 ```
 $ python3.12 -m venv .venv
 ```
-This command creates a `.venv` directory  to store the virtual enviornment
+This command creates a `.venv` directory  to store the virtual environment
 ```
 $ source .venv/bin/activate
 ```
@@ -40,7 +40,7 @@ Other parameters are described when running `python main.py --help`
 
 ## Application
 
-![screenshot of application](./docs/app_screenshot.png "scrrenshot of application")
+![screenshot of application](./docs/app_screenshot.png "screenshot of application")
 
 A GUI application has been added to view inputs and tune parameters. This will only appear when running with the `--run-app` argument when running main.py.
 
