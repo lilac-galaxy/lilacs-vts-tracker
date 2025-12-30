@@ -47,9 +47,15 @@ class ParameterComputer:
         rotation_matrix = transformation_matrix[:3, :3]
         r = Rotation.from_matrix(rotation_matrix)
         angles = r.as_euler("zyx", degrees=True)
-        output += self.get_parameter("FaceAngleX", float(-angles[1]) - rot_of[0])
-        output += self.get_parameter("FaceAngleY", float(-angles[2]) - rot_of[1])
-        output += self.get_parameter("FaceAngleZ", float(angles[0] - rot_of[2]))
+        output += self.get_parameter(
+            "FaceAngleX", float(-angles[1]) - rot_of[0]
+        )
+        output += self.get_parameter(
+            "FaceAngleY", float(-angles[2]) - rot_of[1]
+        )
+        output += self.get_parameter(
+            "FaceAngleZ", float(angles[0] - rot_of[2])
+        )
         return output
 
     def create_blendshapes_dict(self, blendshape_list):

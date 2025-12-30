@@ -16,9 +16,10 @@ class ConnectionMonitor:
     def connection_valid(self):
         return self.valid
 
-    def connection_closed(self):
-        print("Connection Closed, exiting!")
-        self.valid = False
+    def close_connection(self):
+        if self.valid:
+            print("Connection Closed, exiting!")
+            self.valid = False
 
 
 def get_args():
@@ -103,7 +104,7 @@ def main(args):
                     parameter_results
                 )
             except ConnectionClosedOK:
-                connection_monitor.connection_closed()
+                connection_monitor.close_connection()
 
     processor = MPProcessor(args.use_gpu, args.model, callback)
 
@@ -117,10 +118,10 @@ def main(args):
                     capture.wait()
         except KeyboardInterrupt:
             print("Keyboard Interrupt, exiting.")
-            connection_monitor.connection_closed()
+            connection_monitor.close_connection()
         except Exception:
             traceback.print_exc()
-            connection_monitor.connection_closed()
+            connection_monitor.close_connection()
 
     if not args.run_app:
         _face_detection_loop()
@@ -136,14 +137,14 @@ def main(args):
                     app.render_frame(parameter_computer)
                 else:
                     print("Window closed, quitting")
-                    connection_monitor.connection_closed()
+                    connection_monitor.close_connection()
                     break
         except KeyboardInterrupt:
             print("Keyboard Interrupt, exiting.")
-            connection_monitor.connection_closed()
+            connection_monitor.close_connection()
         except Exception:
             traceback.print_exc()
-            connection_monitor.connection_closed()
+            connection_monitor.close_connection()
 
         face_detection_thread.join()
 
