@@ -271,7 +271,7 @@ class Application:
             imgui.begin_group()
             self.draw_base_parameter_group(blendshape_param)
 
-            with imgui.begin_table("Input Blendshapes", 2):
+            if imgui.begin_table("Input Blendshapes", 2):
                 imgui.table_setup_column("Parameter")
                 imgui.table_setup_column("Sign")
                 imgui.table_headers_row()
@@ -285,6 +285,7 @@ class Application:
                     else:
                         sign_text = "Max Negative"
                     imgui.text(sign_text)
+                imgui.end_table()
             imgui.end_group()
 
     def draw_landmark_group(self, landmark_param: LandmarkParameter):

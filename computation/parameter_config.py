@@ -113,7 +113,7 @@ class ParameterConfigs:
                 "face_oval_xy",
                 LandmarkCalculateOption.ELLIPSE_FIT,
                 "CheekPuff",
-                scale=20,
+                scale=30,
                 offset=0.65,
             )
         )
@@ -126,7 +126,7 @@ class ParameterConfigs:
                 LandmarkCalculateOption.ELLIPSE_FIT,
                 "EyeOpenLeft",
                 10,
-                0.3,
+                0.15,
             )
         )
         self.parameters.append(
@@ -137,7 +137,7 @@ class ParameterConfigs:
                 LandmarkCalculateOption.ELLIPSE_FIT,
                 "EyeOpenRight",
                 10,
-                0.3,
+                0.15,
             )
         )
 
@@ -146,8 +146,8 @@ class ParameterConfigs:
                 ParameterType.BLENDSHAPE,
                 "Left Eye X",
                 [
-                    InputBlendshapeOption("eyeLookOutLeft", 1),
-                    InputBlendshapeOption("eyeLookInLeft", -1),
+                    InputBlendshapeOption("eyeLookOutLeft", -1),
+                    InputBlendshapeOption("eyeLookInLeft", 1),
                 ],
                 "EyeLeftX",
                 clamp=False,
@@ -159,8 +159,8 @@ class ParameterConfigs:
                 ParameterType.BLENDSHAPE,
                 "Right Eye X",
                 [
-                    InputBlendshapeOption("eyeLookOutRight", -1),
-                    InputBlendshapeOption("eyeLookInRight", 1),
+                    InputBlendshapeOption("eyeLookOutRight", 1),
+                    InputBlendshapeOption("eyeLookInRight", -1),
                 ],
                 "EyeRightX",
                 clamp=False,

@@ -84,8 +84,8 @@
             "parameter_type": "LANDMARK",
             "name": "Cheek Puff",
             "output_id": "CheekPuff",
-            "scale": 30.0,
-            "offset": 0.6499999761581421,
+            "scale": 30,
+            "offset": 0.65,
             "clamp": true,
             "min_val": 0.0,
             "max_val": 1.0,
@@ -96,8 +96,8 @@
             "parameter_type": "LANDMARK",
             "name": "Left Eye Open",
             "output_id": "EyeOpenLeft",
-            "scale": 20.0,
-            "offset": 0.25,
+            "scale": 10,
+            "offset": 0.15,
             "clamp": true,
             "min_val": 0.0,
             "max_val": 1.0,
@@ -108,8 +108,8 @@
             "parameter_type": "LANDMARK",
             "name": "Right Eye Open",
             "output_id": "EyeOpenRight",
-            "scale": 10.0,
-            "offset": 0.30000001192092896,
+            "scale": 10,
+            "offset": 0.15,
             "clamp": true,
             "min_val": 0.0,
             "max_val": 1.0,
@@ -120,7 +120,7 @@
             "parameter_type": "BLENDSHAPE",
             "name": "Left Eye X",
             "output_id": "EyeLeftX",
-            "scale": -1.0,
+            "scale": 1.0,
             "offset": 0.0,
             "clamp": false,
             "min_val": 0.0,
@@ -128,11 +128,11 @@
             "input_parameters": [
                 {
                     "name": "eyeLookOutLeft",
-                    "sign": 1
+                    "sign": -1
                 },
                 {
                     "name": "eyeLookInLeft",
-                    "sign": -1
+                    "sign": 1
                 }
             ]
         },
@@ -140,7 +140,7 @@
             "parameter_type": "BLENDSHAPE",
             "name": "Right Eye X",
             "output_id": "EyeRightX",
-            "scale": -1.0,
+            "scale": 1.0,
             "offset": 0.0,
             "clamp": false,
             "min_val": 0.0,
@@ -148,11 +148,11 @@
             "input_parameters": [
                 {
                     "name": "eyeLookOutRight",
-                    "sign": -1
+                    "sign": 1
                 },
                 {
                     "name": "eyeLookInRight",
-                    "sign": 1
+                    "sign": -1
                 }
             ]
         },
@@ -200,8 +200,8 @@
             "parameter_type": "LANDMARK",
             "name": "Mouth Open",
             "output_id": "MouthOpen",
-            "scale": 20.0,
-            "offset": 0.03500000014901161,
+            "scale": 20,
+            "offset": 0.035,
             "clamp": false,
             "min_val": 0.0,
             "max_val": 1.0,
@@ -212,8 +212,8 @@
             "parameter_type": "LANDMARK",
             "name": "Mouth Open Plus Volume",
             "output_id": "VoiceVolumePlusMouthOpen",
-            "scale": 20.0,
-            "offset": 0.04500000178813934,
+            "scale": 20,
+            "offset": 0.045,
             "clamp": false,
             "min_val": 0.0,
             "max_val": 1.0,
@@ -304,5 +304,15 @@
                 }
             ]
         }
+    ],
+    "face_position_offset": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "face_rotation_offset": [
+        0.0,
+        0.0,
+        0.0
     ]
 }
