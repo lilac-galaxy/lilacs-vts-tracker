@@ -7,16 +7,15 @@ Mediapipe face landmarker model attained from google via
 $ wget -O face_landmarker_v2_with_blendshapes.task -q https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task
 ```
 
-Python Requirements: mediapipe, websockets, scikit-image, pyimgui[sdl2] python version 3.9 - 3.12 (see [requirements.txt](./requirements.txt))
+Python Requirements: mediapipe, websockets, scikit-image, imgui-bundle[sdl2], PyOpenGL, python version >= 3.9 (see [requirements.txt](./requirements.txt))
 
 App Requirements: OpenGL version >= v3.3
 
 Recommend running in a virtual environment
 
 ### Venv Setup
-This was done on arch linux with the python3.12 package as pyimgui does not yet support python3.13.
 ```
-$ python3.12 -m venv .venv
+$ python -m venv .venv
 ```
 This command creates a `.venv` directory  to store the virtual environment
 ```

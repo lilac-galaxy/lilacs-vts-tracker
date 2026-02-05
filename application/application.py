@@ -1,9 +1,9 @@
 import ctypes
-import imgui
+from imgui_bundle import imgui
 import sdl2
 import OpenGL.GL as gl
 
-from imgui.integrations.sdl2 import SDL2Renderer
+from imgui_bundle.python_backends.sdl2_backend import SDL2Renderer
 from computation.parameter_config import ParameterConfigs
 from computation.parameters import (
     BlendshapeParameter,
@@ -130,9 +130,12 @@ class Application:
 
     def draw_landmark_set(self, x, y, offsets, draw_list, landmarks, color):
         for point in landmarks:
-            draw_list.add_circle_filled(
+            center = imgui.ImVec2(
                 x + ((offsets[0] - point[0])) * 1000,
                 y + (point[1] - offsets[1]) * 1000,
+            )
+            draw_list.add_circle_filled(
+                center,
                 1,
                 color,
             )
@@ -151,7 +154,7 @@ class Application:
         return (sum_x, sum_y)
 
     def draw_landmarks(self, landmarks):
-        with imgui.begin("Landmarks Window"):
+        if imgui.begin("Landmarks Window")[0]:
             if landmarks is None:
                 imgui.text("No Landmark Data Available")
             else:
@@ -167,7 +170,7 @@ class Application:
                     offsets,
                     draw_list,
                     landmarks["all_xy"],
-                    imgui.get_color_u32_rgba(1, 1, 0, 1),
+                    imgui.get_color_u32(imgui.ImVec4(1, 1, 0, 1)),
                 )
                 self.draw_landmark_set(
                     x,
@@ -175,7 +178,7 @@ class Application:
                     offsets,
                     draw_list,
                     landmarks["lips_xy"],
-                    imgui.get_color_u32_rgba(1, 0, 0, 1),
+                    imgui.get_color_u32(imgui.ImVec4(1, 0, 0, 1)),
                 )
                 self.draw_landmark_set(
                     x,
@@ -183,7 +186,7 @@ class Application:
                     offsets,
                     draw_list,
                     landmarks["left_eye_xy"],
-                    imgui.get_color_u32_rgba(1, 0, 0, 1),
+                    imgui.get_color_u32(imgui.ImVec4(1, 0, 0, 1)),
                 )
                 self.draw_landmark_set(
                     x,
@@ -191,7 +194,7 @@ class Application:
                     offsets,
                     draw_list,
                     landmarks["right_eye_xy"],
-                    imgui.get_color_u32_rgba(1, 0, 0, 1),
+                    imgui.get_color_u32(imgui.ImVec4(1, 0, 0, 1)),
                 )
                 self.draw_landmark_set(
                     x,
@@ -199,7 +202,7 @@ class Application:
                     offsets,
                     draw_list,
                     landmarks["left_eyebrow_xy"],
-                    imgui.get_color_u32_rgba(1, 0, 0, 1),
+                    imgui.get_color_u32(imgui.ImVec4(1, 0, 0, 1)),
                 )
                 self.draw_landmark_set(
                     x,
@@ -207,11 +210,12 @@ class Application:
                     offsets,
                     draw_list,
                     landmarks["right_eyebrow_xy"],
-                    imgui.get_color_u32_rgba(1, 0, 0, 1),
+                    imgui.get_color_u32(imgui.ImVec4(1, 0, 0, 1)),
                 )
+        imgui.end()
 
     def draw_outputs(self, outputs):
-        with imgui.begin("Output Window"):
+        if imgui.begin("Output Window")[0]:
             if outputs is None:
                 imgui.text("No Output Data Available")
             else:
@@ -219,10 +223,12 @@ class Application:
                     imgui.text(result["id"])
                     imgui.same_line()
                     imgui.text(f"{result["value"]:.3f}")
+        imgui.end()
 
     def draw_blendshapes(self, blendshapes):
-        with imgui.begin("Blendshape Window"):
-            imgui.push_style_color(imgui.COLOR_PLOT_HISTOGRAM, 0.6, 0.0, 0.4)
+        if imgui.begin("Blendshape Window")[0]:
+            style_color = imgui.ImVec4(0.6, 0.0, 0.4, 1.0)
+            imgui.push_style_color(imgui.Col_.plot_histogram, style_color)
             if blendshapes is None:
                 imgui.text("No Blendshape Results Available")
             else:
@@ -231,6 +237,7 @@ class Application:
                         blendshapes[blendshape_name], overlay=blendshape_name
                     )
             imgui.pop_style_color()
+        imgui.end()
 
     def draw_base_parameter_group(self, parameter: BaseParameter):
         imgui.text(f"Output: {parameter.output_id}")
@@ -257,7 +264,7 @@ class Application:
                 parameter.max_val = max(new_max, parameter.min_val)
 
     def draw_blendshape_group(self, blendshape_param: BlendshapeParameter):
-        expanded, _ = imgui.collapsing_header(
+        expanded = imgui.collapsing_header(
             f"Blendshape Calculation: {blendshape_param.name}"
         )
         if expanded:
@@ -280,7 +287,7 @@ class Application:
                         imgui.text(sign_text)
 
     def draw_landmark_group(self, landmark_param: LandmarkParameter):
-        expanded, _ = imgui.collapsing_header(
+        expanded = imgui.collapsing_header(
             f"Landmark Calculation: {landmark_param.name}"
         )
         if expanded:
@@ -297,7 +304,7 @@ class Application:
     def draw_parameter_window(
         self, configs: ParameterConfigs, computer: ParameterComputer
     ):
-        with imgui.begin("Parameter Window"):
+        if imgui.begin("Parameter Window")[0]:
             parameter: Parameter
             for parameter in configs.parameters:
                 match parameter.parameter_type:
@@ -331,6 +338,7 @@ class Application:
                     output.get("FaceAngleZ", 0) + curr_rot_of[2],
                 )
                 configs.file_save()
+        imgui.end()
 
     def keep_drawing(self):
         return not self.should_close

@@ -1,7 +1,6 @@
 [project]
 name = "lilacs-vts-tracker"
 requires-python = ">= 3.9"
-requires-python = "< 3.13"
 description = "Plugin for VTube Studio for camera-based face tracking with mediapipe."
 
 [tool.black]
