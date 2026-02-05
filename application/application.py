@@ -268,38 +268,40 @@ class Application:
             f"Blendshape Calculation: {blendshape_param.name}"
         )
         if expanded:
-            with imgui.begin_group():
-                self.draw_base_parameter_group(blendshape_param)
+            imgui.begin_group()
+            self.draw_base_parameter_group(blendshape_param)
 
-                with imgui.begin_table("Input Blendshapes", 2):
-                    imgui.table_setup_column("Parameter")
-                    imgui.table_setup_column("Sign")
-                    imgui.table_headers_row()
-                    for input_param in blendshape_param.input_parameters:
-                        imgui.table_next_column()
-                        imgui.text(input_param.name)
-                        imgui.table_next_column()
-                        sign_text = ""
-                        if input_param.sign > 0:
-                            sign_text = "Max_Positive"
-                        else:
-                            sign_text = "Max Negative"
-                        imgui.text(sign_text)
+            with imgui.begin_table("Input Blendshapes", 2):
+                imgui.table_setup_column("Parameter")
+                imgui.table_setup_column("Sign")
+                imgui.table_headers_row()
+                for input_param in blendshape_param.input_parameters:
+                    imgui.table_next_column()
+                    imgui.text(input_param.name)
+                    imgui.table_next_column()
+                    sign_text = ""
+                    if input_param.sign > 0:
+                        sign_text = "Max_Positive"
+                    else:
+                        sign_text = "Max Negative"
+                    imgui.text(sign_text)
+            imgui.end_group()
 
     def draw_landmark_group(self, landmark_param: LandmarkParameter):
         expanded = imgui.collapsing_header(
             f"Landmark Calculation: {landmark_param.name}"
         )
         if expanded:
-            with imgui.begin_group():
-                imgui.text(f"Landmark Calculation: {landmark_param.name}")
-                self.draw_base_parameter_group(landmark_param)
+            imgui.begin_group()
+            imgui.text(f"Landmark Calculation: {landmark_param.name}")
+            self.draw_base_parameter_group(landmark_param)
 
-                imgui.text(f"Input Set: {landmark_param.input_landmark_set}")
-                option_name = LandmarkCalculateOption(
-                    landmark_param.calculate_option
-                ).name
-                imgui.text(f"Calculation: {option_name}")
+            imgui.text(f"Input Set: {landmark_param.input_landmark_set}")
+            option_name = LandmarkCalculateOption(
+                landmark_param.calculate_option
+            ).name
+            imgui.text(f"Calculation: {option_name}")
+            imgui.end_group()
 
     def draw_parameter_window(
         self, configs: ParameterConfigs, computer: ParameterComputer
